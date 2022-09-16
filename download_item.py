@@ -10,7 +10,8 @@ import sys
 import multiprocessing
 from termcolor import colored
 
-illegal_char_re = re.compile(r'[\\/:*?"<>|]')
+illegal_char_re_0 = re.compile(r'[\\/:*?"<>|]')
+illegal_char_re_1 = re.compile(r'\.+\s*$')
 split_re_0 = re.compile(r'Download\s*')
 
 def bar_progress(current, total, width=80):
@@ -43,7 +44,7 @@ class ItemDownloader:
         self.time_str = self.page_soup.find('div', class_='post__published').text.strip()
         date = self.time_str.split(' ')[0]
 
-        self.save_dir = os.path.join(save_dir_parent, date + ' ' + illegal_char_re.sub(' ', self.title)).strip()
+        self.save_dir = os.path.join(save_dir_parent, date + ' ' + illegal_char_re_0.sub(' ', illegal_char_re_1.sub('', self.title))).strip()
         os.makedirs(self.save_dir, exist_ok=True)
 
     def download_link(self, url, file_name):
