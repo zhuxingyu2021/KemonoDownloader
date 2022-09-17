@@ -90,11 +90,12 @@ def grep_illegal_char(path):
 
 
 class MetaData:
-    def __init__(self, url_first_page, save_dir, proxies):
+    def __init__(self, url_first_page, save_dir, num_threads, proxies):
         self.url_first_page = url_first_page
         self.save_dir = save_dir
         self.proxies = proxies
         self.page_soups = []
+        self.num_threads = num_threads
 
     def receive_page(self, url):
         req = requests.get(url, proxies=self.proxies)
@@ -145,7 +146,7 @@ class MetaData:
 
         print("Receiving & Parsing card pages ...")
         results = None
-        with Pool(multiprocessing.cpu_count()) as p:
+        with Pool(self.num_threads) as p:
             args = [(key, x[2], self.save_dir, self.proxies) for key, x in self.item_map.items()]
             results = p.map(request_get_wrapper, args)
 

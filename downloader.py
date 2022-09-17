@@ -30,11 +30,13 @@ if __name__ == '__main__':
     parser.add_argument('metadata_dir', type=str, help="Metadata file directory")
     parser.add_argument('-r', '--resource', type=str, help="""Download resource type""", default="cfi")
     parser.add_argument('-c', '--check_only', help="Check-only, not to download", action='store_true')
+    parser.add_argument('-n', '--n_threads', help="Thread num", default=multiprocessing.cpu_count())
 
     args = parser.parse_args()
     meta_data_path = os.path.join(args.metadata_dir, 'meta.json')
     resource_type_str = args.resource
     check_only_mode = args.check_only
+    threads_num = int(args.n_threads)
 
     download_content_resources = False
     download_file_resources = False
@@ -92,11 +94,11 @@ if __name__ == '__main__':
         print(colored("Will download file:", "green"), file_path, colored(",from link:", "green"), link)
 
     if not check_only_mode:
-        with Pool(multiprocessing.cpu_count()) as p:
+        with Pool(threads_num) as p:
             for link, file_path in download_lists:
                 print(colored("Downloading file:", "blue"), file_path, colored(",from link:", "blue"), link)
                 p.apply_async(_wget_download, args=(link, file_path))
-                while p._taskqueue.qsize() > multiprocessing.cpu_count():
+                while p._taskqueue.qsize() > threads_num:
                     time.sleep(1)
 
             p.close()
