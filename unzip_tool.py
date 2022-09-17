@@ -17,9 +17,6 @@ def unzip(path):
                 with zipfile.ZipFile(file_path, 'r') as zip_ref:
                     zip_ref.extractall(extract_path)
 
-                print("Delete file: %s" % file_path)
-                os.remove(file_path)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Unzip all zip files in a directory")

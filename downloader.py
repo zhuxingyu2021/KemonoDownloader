@@ -17,7 +17,7 @@ def _wget_download(url, path):
         try:
             wget.download(url, path)
             retry = False
-        except urllib.error:
+        except urllib.error.ContentTooShortError:
             print(colored('Download', 'red'), url, colored('failed, retrying...', 'red'))
             retry = True
         except Exception as e:
