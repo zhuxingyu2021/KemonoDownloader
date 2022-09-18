@@ -5,8 +5,8 @@ import json
 from datetime import datetime
 import shutil
 
-tmpfile_re = re.compile(r'.tmp$')
-txt_json_re = re.compile(r'.txt$|.json$')
+tmpfile_re = re.compile(r'\.tmp$')
+txt_json_re = re.compile(r'\.txt$|\.json$')
 
 def clean_tmp(path):
     for root, _, files in os.walk(path):
@@ -20,7 +20,7 @@ def clean_tmp(path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Clean .tmp and expired files')
     parser.add_argument('dir', type=str, help='save dir')
-    parser.add_argument('-t', '--time', type=str, help="expired time")
+    parser.add_argument('-t', '--time', type=str, help="expired time, format:(%Y-%m-%d-%H:%M:%S)")
 
     args = parser.parse_args()
     dir_name = args.dir

@@ -2,6 +2,7 @@ import zipfile
 import argparse
 import os
 import re
+from termcolor import colored
 
 zipfile_re = re.compile(r'.zip$')
 
@@ -15,7 +16,10 @@ def unzip(path):
                 print("Unzip file: %s to %s" % (file_path, extract_path))
 
                 with zipfile.ZipFile(file_path, 'r') as zip_ref:
-                    zip_ref.extractall(extract_path)
+                    try:
+                        zip_ref.extractall(extract_path)
+                    except zipfile.BadZipFile:
+                        print(colored("Bad zip file: %s" % file_path, "red"))
 
 
 if __name__ == '__main__':

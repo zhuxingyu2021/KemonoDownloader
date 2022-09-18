@@ -9,7 +9,7 @@ import time
 import urllib
 import traceback
 import logging
-
+from datetime import datetime
 
 def _wget_download(url, path):
     retry = True
@@ -31,12 +31,14 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--resource', type=str, help="""Download resource type""", default="cfi")
     parser.add_argument('-c', '--check_only', help="Check-only, not to download", action='store_true')
     parser.add_argument('-n', '--n_threads', help="Thread num", default=multiprocessing.cpu_count())
+    parser.add_argument('-t', '--time', type=str, help="download time after this time, format:(%Y-%m-%d-%H:%M:%S)")
 
     args = parser.parse_args()
     meta_data_path = os.path.join(args.metadata_dir, 'meta.json')
     resource_type_str = args.resource
     check_only_mode = args.check_only
     threads_num = int(args.n_threads)
+    download_time = datetime.strptime(args.time, "%Y-%m-%d-%H:%M:%S") if args.time is not None else None
 
     download_content_resources = False
     download_file_resources = False
@@ -61,6 +63,10 @@ if __name__ == '__main__':
 
     download_lists = []
     for item in meta_data["details"]:
+        if download_time is not None:
+            if datetime.strptime(item["time"], "%Y-%m-%d %H:%M:%S") < download_time:
+                continue
+
         if download_content_resources:
             for file, link in item["content resources"].items():
                 file_path = os.path.join(item["dir name"], file)
